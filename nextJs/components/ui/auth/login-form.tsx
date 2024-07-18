@@ -15,8 +15,13 @@ import {
 import { loginSchema } from "@/schemas";
 import { Input } from "../input";
 import { Button } from "../button";
+import { useEffect, useTransition } from "react";
 import axios from "axios";
+import { loginApi } from "@/actions/login";
+import { toast } from "../use-toast";
+import { Watch } from "react-loader-spinner";
 export const LoginForm = () => {
+  const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -26,6 +31,22 @@ export const LoginForm = () => {
   });
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
     console.log("values", values);
+    startTransition(async () => {
+      try {
+        const res: any = await loginApi(values);
+        if (res.error) {
+          toast({
+            variant: "destructive",
+            title: res.error,
+          });
+        } else {
+          toast({
+            // variant: "destructive",
+            title: res.success,
+          });
+        }
+      } catch (error) {}
+    });
   };
   return (
     <CardWrapper
@@ -39,6 +60,7 @@ export const LoginForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             <FormField
+              disabled={isPending}
               control={form.control}
               name="email"
               render={({ field }) => (
@@ -58,6 +80,7 @@ export const LoginForm = () => {
           </div>
           <div className="space-y-4">
             <FormField
+              disabled={isPending}
               control={form.control}
               name="password"
               render={({ field }) => (
@@ -73,8 +96,26 @@ export const LoginForm = () => {
           </div>
 
           <div>
-            <Button type="submit" size="lg" className="w-full">
-              Sign In
+            <Button
+              disabled={isPending}
+              type="submit"
+              size="lg"
+              className="w-full"
+            >
+              {isPending ? (
+                <Watch
+                  visible={true}
+                  height="40"
+                  width="40"
+                  radius="48"
+                  color="#4fa94d"
+                  ariaLabel="watch-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </div>
         </form>
