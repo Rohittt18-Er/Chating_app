@@ -12,7 +12,7 @@ import next from "next";
 const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { nextUrl } = req;
-  const isLoggedIn = true;
+  const isLoggedIn = !!req.auth;
   const isApiAuthRoutes = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoutes = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
@@ -30,8 +30,8 @@ export default auth((req) => {
 
   if (!isLoggedIn && !isPublicRoutes) {
     return Response.redirect(new URL("/login", nextUrl));
-    return null;
   }
+  return null;
 });
 
 export const config = {
