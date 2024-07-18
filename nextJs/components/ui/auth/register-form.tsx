@@ -17,7 +17,7 @@ import { Input } from "../input";
 import { Button } from "../button";
 import { useEffect, useTransition } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { registerApi } from "@/actions/register/register";
+import { registerApi } from "@/actions/regitser";
 
 export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
