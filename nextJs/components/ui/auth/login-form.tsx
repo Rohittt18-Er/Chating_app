@@ -17,10 +17,17 @@ import { Input } from "../input";
 import { Button } from "../button";
 import { useEffect, useTransition } from "react";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
 import { loginApi } from "@/actions/login";
 import { toast } from "../use-toast";
 import { Watch } from "react-loader-spinner";
+
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError: any =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email is already used with another providers"
+      : null;
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -30,7 +37,6 @@ export const LoginForm = () => {
     },
   });
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    console.log("values", values);
     startTransition(async () => {
       try {
         const res: any = await loginApi(values);
@@ -39,6 +45,12 @@ export const LoginForm = () => {
             variant: "destructive",
             title: res.error,
           });
+          if (urlError !== null) {
+            toast({
+              variant: "destructive",
+              title: urlError,
+            });
+          }
         } else {
           toast({
             // variant: "destructive",

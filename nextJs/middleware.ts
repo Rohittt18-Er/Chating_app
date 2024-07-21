@@ -8,6 +8,7 @@ import {
   publicRoutes,
 } from "./routes";
 import next from "next";
+import { getUserById } from "./data/user";
 
 const { auth } = NextAuth(authConfig);
 export default auth((req) => {
