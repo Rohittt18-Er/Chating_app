@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { registerSchema } from "@/schemas";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
+import { genrateVerificationToken } from "@/lib/tokens";
+import { sendVerification } from "@/lib/mail";
 
 export const registerApi = async (values: z.infer<typeof registerSchema>) => {
   const validatedFeilds = registerSchema.safeParse(values);
@@ -12,7 +14,7 @@ export const registerApi = async (values: z.infer<typeof registerSchema>) => {
     return { error: "Invalid input feilds" };
   }
   const { email, name, password } = validatedFeilds.data;
-  const existingUser = await db.user.findUnique({
+  const existingUser: any = await db.user.findFirst({
     where: {
       email,
     },
@@ -23,7 +25,7 @@ export const registerApi = async (values: z.infer<typeof registerSchema>) => {
   // hashed password
   const hashedPassword: any = await bcrypt.hash(password, 10);
 
-  await db.user.create({
+  const userData: any = await db.user.create({
     data: {
       email,
       name,
@@ -31,5 +33,9 @@ export const registerApi = async (values: z.infer<typeof registerSchema>) => {
     },
   });
 
-  return { success: "User created successfully" };
+  const verificationToken: any = await genrateVerificationToken(email);
+
+  await sendVerification(userData.email, userData.token);
+
+  return { success: "Verification has been sent" };
 };

@@ -2,11 +2,9 @@ import { db } from "@/lib/db";
 
 export const getUser = async (email: string) => {
   try {
-    const user = await db.user.findUnique({
+    const user = await db.user.findFirst({
       where: { email },
     });
-    console.log(user);
-
     if (!user) {
       return { error: "User not found" };
     }
@@ -16,9 +14,9 @@ export const getUser = async (email: string) => {
   }
 };
 
-export const getUserById = async (id: string) => {
+export const getUserById = async (id: any) => {
   try {
-    const user = await db.user.findUnique({
+    const user = await db.user.findFirst({
       where: { id },
     });
     if (!user) {
