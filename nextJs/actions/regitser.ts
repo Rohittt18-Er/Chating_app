@@ -35,7 +35,8 @@ export const registerApi = async (values: z.infer<typeof registerSchema>) => {
 
   const verificationToken: any = await genrateVerificationToken(email);
 
-  await sendVerification(userData.email, userData.token);
+  await sendVerification(userData.email, verificationToken.token);
+  console.log();
 
   return { success: "Verification has been sent" };
 };

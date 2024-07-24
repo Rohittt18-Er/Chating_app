@@ -21,7 +21,7 @@ const nextAuthConfig = {
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
-          const userFound = await db.user.findUnique({ where: { email } });
+          const userFound = await db.user.findFirst({ where: { email } });
 
           if (!userFound) {
             return null;

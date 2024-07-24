@@ -18,6 +18,7 @@ import { Button } from "../button";
 import { useEffect, useTransition } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { registerApi } from "@/actions/regitser";
+import { Watch } from "react-loader-spinner";
 
 export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -125,7 +126,20 @@ export const RegisterForm = () => {
               size="lg"
               className="w-full"
             >
-              Sign Up
+              {isPending ? (
+                <Watch
+                  visible={true}
+                  height="40"
+                  width="40"
+                  radius="48"
+                  color="#4fa94d"
+                  ariaLabel="watch-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </div>
         </form>
