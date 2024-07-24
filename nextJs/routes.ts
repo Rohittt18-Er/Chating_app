@@ -2,7 +2,7 @@
  * an array that accessible to the public
  */
 
-export const publicRoutes = ["/"];
+export const publicRoutes = ["/", "/new-verification"];
 
 /*
 * an array that use for authentication
